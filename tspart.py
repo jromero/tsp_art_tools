@@ -83,13 +83,13 @@ else:
 LINKERN_OPTS = ' -r %s -o %s %s'
 
 # Number of linkern runs to take
-linkern_runs = 3
+linkern_runs = 1
 
 # Simply report the number of stipples?
 stipple_report_only = False
 
 # Maximum number of line segments per <path>
-max_segments = int( 400 )
+max_segments = int( 40000000000000 )
 
 # Fill color for closed paths
 fill_color = 'none'
