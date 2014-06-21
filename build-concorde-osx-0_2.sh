@@ -32,8 +32,8 @@ SRCDIR=/usr/local/src/concorde
 BINDIR=/usr/local/bin
 #
 # What to build (32 bit and/or 64 bit)
-BUILD32=1
-BUILD64=0
+BUILD32=0
+BUILD64=1
 #
 # Because we like to watch the commands go by....
 set -x
@@ -47,10 +47,10 @@ if [ $BUILD32 -ne 0 ]; then
     # 32bit libraries
     mkdir -p $SRCDIR/qsopt32
     cd $SRCDIR/qsopt32
-    curl -O http://www2.isye.gatech.edu/~wcook/qsopt/beta/codes/mac/qsopt.a
-    curl -O http://www2.isye.gatech.edu/~wcook/qsopt/beta/codes/mac/qsopt.h
+    curl -O http://www.math.uwaterloo.ca/~bico//qsopt/beta/codes/mac/qsopt.a
+    curl -O http://www.math.uwaterloo.ca/~bico//qsopt/beta/codes/mac/qsopt.h
     # You don't actually need the qsopt executable
-    curl -O http://www2.isye.gatech.edu/~wcook/qsopt/beta/codes/mac/qsopt
+    curl -O http://www.math.uwaterloo.ca/~bico//qsopt/beta/codes/mac/qsopt
     chmod a+x qsopt
 fi
 #
@@ -58,19 +58,19 @@ if [ $BUILD64 -ne 0 ]; then
     # 64bit libraries
     mkdir -p $SRCDIR/qsopt64
     cd $SRCDIR/qsopt64
-    curl -O http://www2.isye.gatech.edu/~wcook/qsopt/beta/codes/mac64/qsopt.a
-    curl -O http://www2.isye.gatech.edu/~wcook/qsopt/beta/codes/mac64/qsopt.h
+    curl -O http://www.math.uwaterloo.ca/~bico//qsopt/beta/codes/mac64/qsopt.a
+    curl -O http://www.math.uwaterloo.ca/~bico//qsopt/beta/codes/mac64/qsopt.h
     # You don't actually need the qsopt executable
-    curl -O http://www2.isye.gatech.edu/~wcook/qsopt/beta/codes/mac64/qsopt
+    curl -O http://www.math.uwaterloo.ca/~bico//qsopt/beta/codes/mac64/qsopt
     chmod a+x qsopt
 fi
 #
 # Now download the Concorde TSP solver package and buld it
 #
 cd $SRCDIR/..
-curl -O http://www.tsp.gatech.edu/concorde/downloads/codes/src/co031219.tgz
+curl -O http://www.math.uwaterloo.ca/tsp/concorde/downloads/codes/src/co031219.tgz
 # will unpack to ./concorde
-tar xvz < co031219.tgz
+tar zxvf co031219.tgz
 cd concorde
 #
 if [ $BUILD32 -ne 0 ]; then
