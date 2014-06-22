@@ -405,7 +405,6 @@ class tspBitCity:
 		assert( tour )
 		assert( int( max_segments ) >= 0 )
 
-
 		# ms will limit number of points in the path and hence we need
 		# ms = max_segments + 1 unless max_segments = 0
 		# Note that previously we ensured that max_segments >= 0
@@ -426,9 +425,6 @@ class tspBitCity:
 
 		f = open( outfile, 'w' )
 
-		tx = ( 3200 - self.width ) / 2 if self.width else 0
-		ty = ( 800 + self.height ) / 2 if self.height else 0
-
 		# Write the SVG preamble?
 		if ( 1 & int( file_contents ) ):
 			f.write(
@@ -441,8 +437,8 @@ class tspBitCity:
 '     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"\n' +
 '     xmlns:dc="http://purl.org/dc/elements/1.1/"\n' +
 '     xmlns:cc="http://creativecommons.org/ns#"\n' +
-'     height="800"\n' +
-'     width="3200">\n' +
+'     height="' + str(self.height) + '"\n' +
+'     width="' + str(self.width) + '">\n' +
 '  <sodipodi:namedview\n' +
 '            showgrid="false"\n' +
 '            showborder="true"\n' +
@@ -472,14 +468,16 @@ class tspBitCity:
 			f.write('inkscape:groupmode="layer" ' + \
 				'inkscape:label="%s"\n' % label.replace( '&', '&amp;' ).replace( '"', '&quot;' ) )
 
-		f.write(
-'     transform="translate(%d, %d) scale(1, -1)">\n' % ( tx, ty ) )
+		f.write('>\n')
 
 		max_index = len( self.coordinates )
 		last_city = None
 		path = False
 		first_path = True
 		points = 0
+		last_city_y = 0
+		next_city_x = 0
+		next_city_y = 0
 
 		for city_idx in tour:
 
@@ -496,16 +494,20 @@ class tspBitCity:
 				path = True
 				if not last_city:
 					last_city = self.coordinates[city_index]
+					
+				last_city_y = self.height - last_city[1]
 				f.write( '    <path style="fill:%s;stroke:%s;stroke-width:1"\n' % ( fill_color, line_color ) +
-						'          d="m %d,%d' % last_city )
+						'          d="m %d,%d' % (last_city[0], last_city_y) )
 				if points == 0:
 					# This is the first path so skip the next step
 					continue
 
 			# Now move to the current city
 			next_city = self.coordinates[city_index]
-			f.write( ' %d,%d' % ( next_city[0] - last_city[0],
-					      next_city[1] - last_city[1] ) )
+			next_city_x = next_city[0] - last_city[0]
+			next_city_y = (next_city[1] - last_city[1]) * -1
+				
+			f.write( ' %d,%d' % ( next_city_x, next_city_y ) )
 			last_city = next_city
 			points += 1
 
@@ -535,7 +537,7 @@ class tspBitCity:
 			f.write( '</svg>\n' )
 
 		return True
-
+		
 if __name__ == '__main__':
 
 	def fixup_args( argv ):
