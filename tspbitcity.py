@@ -461,9 +461,6 @@ class tspBitCity:
 '    </rdf:RDF>\n' +
 '  </metadata>\n')
 
-		# Now open the SVG group
-		f.write('  <g ')
-
 		if label and ( label != '' ):
 			f.write('inkscape:groupmode="layer" ' + \
 				'inkscape:label="%s"\n' % label.replace( '&', '&amp;' ).replace( '"', '&quot;' ) )
@@ -528,9 +525,6 @@ class tspBitCity:
 				f.write( ' Z"/>\n' )
 			else:
 				f.write( '"/>\n' )
-
-		# Close out the SVG document
-		f.write( '  </g>\n' )
 
 		# Write the SVG postamble?
 		if ( 2 & int( file_contents) ):
