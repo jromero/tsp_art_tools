@@ -108,7 +108,7 @@ class tspBitCity:
 			column_byte_index = 0
 
 			# Convert the unsigned char byte to an integer
-			column_byte = int( ord( row_bytes[0] ) )
+			column_byte = int( ord( row_bytes[0].decode("utf-8") ) )
 
 			# Now process this row from left to right, x = 0 to x = w - 1
 			pixel_mask = int( 0x80 )
@@ -283,7 +283,8 @@ class tspBitCity:
 		# For PBM files this will always be two bytes followed by a \n
 		# For other image types, this line could be who knows what.  Hence
 		# our use of a size argument to readline()
-		magic_number = f.readline(4).strip()
+		magic_number = f.readline().strip().decode("utf-8")
+		print( "Magic Number: %s" % magic_number)
 
 		# PBM files must be P1 or P4
 		if magic_number in ['P4', 'P1']:
@@ -298,7 +299,7 @@ class tspBitCity:
 			self.width, self.height = ( 0, 0 )
 			while True:
 				line = f.readline()
-				if not line.startswith( '#' ):
+				if not line.startswith( b"#" ):
 					self.width, self.height = tuple( map( int, line.split() ) )
 					break
 

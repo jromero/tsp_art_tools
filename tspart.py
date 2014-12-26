@@ -138,6 +138,13 @@ def usage( prog, exit_stat=0 ):
 	else:
 		sys.stdout.write( str )
 	sys.exit( exit_stat )
+
+#
+# Troubleshotting info
+#
+print( "Current dir: %s" % os.getcwd() )
+print( "Directory of executable: %s" % os.path.dirname( os.path.realpath( __file__ ) ) )
+
 # Determine the names of our input and output files
 # Input bitmap file name
 # Output SVG file name
