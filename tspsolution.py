@@ -109,7 +109,7 @@ class tspSolution:
 		for t in self.tour:
 			i = int( t )
 			if ( i < 0 ) or ( i > self.count ):
-				print t, i
+				print( t, i )
 				sys.stderr.write( 'Invalid tour index found in file %s\n' % self.infile )
 				return False
 

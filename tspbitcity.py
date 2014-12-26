@@ -328,7 +328,7 @@ class tspBitCity:
 			line = f.readline().strip()
 			if line != 'coord y-coord radius':
 				sys.stderr.write( 'Input file %s is not a supported file type\n' % self.infile )
-				sys.stderr.write( 'Must be a PBM file or file of (x, y) coordinates\n' )
+				sys.stderr.write( 'Must be a PBM file or file of (x, y) coordinates. [err=1]\n' )
 				f.close()
 				return False
 
@@ -338,7 +338,7 @@ class tspBitCity:
 
 			# Unsupported file type
 			sys.stderr.write( 'Input file %s is not a supported file type\n' % self.infile )
-			sys.stderr.write( 'Must be a PBM file or file of (x, y) coordinates\n' )
+			sys.stderr.write( 'Must be a PBM file or file of (x, y) coordinates. [err=2]\n' )
 			f.close()
 			return False
 

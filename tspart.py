@@ -188,13 +188,13 @@ if len( args ) == 0:
 		try:
 			infile = raw_input( 'Input file: ' )
 		except:
-			print
+			print()
 			sys.exit( 0 )
 	while outfile == '':
 		try:
 			outfile = raw_input( 'Output file: ' )
 		except:
-			print
+			print()
 			sys.exit( 0 )
 elif len( args ) == 1:
 	infile = args[0]
@@ -202,9 +202,14 @@ elif len( args ) == 2:
 	infile = args[0]
 	outfile = args[1]
 else:
-	os.stderr.write( 'Usage: %s [input-bitmap-file [output-svg-file]]\n' % sys.argv[0] )
-	os.sysexit(1)
+	sys.stderr.write( 'Usage: %s [input-bitmap-file [output-svg-file]]\n' % sys.argv[0] )
+	sys.exit(1)
 
+# Convert files to absolute files
+infile = os.path.abspath( infile )
+if not os.path.exists( infile ):
+	sys.stderr.write( 'File %s does not exist!\n' % infile )
+	sys.exit(1)
 
 # Now do some fixups, including defaulting the output file name
 if infile.endswith( '.pbm' ) or infile.endswith( '.pts' ):
@@ -231,11 +236,11 @@ else:
 solfile = os.path.join(tempfile.gettempdir(), os.path.basename(solfile))
 
 # Load the bitmap file
-print 'Loading bitmap file %s ... ' % infile,
+print( 'Loading bitmap file %s ... ' % infile )
 cities = tspBitCity()
 if not cities.load( infile ):
 	sys.exit(1)
-print 'done; %d stipples' % len( cities.coordinates )
+print( 'done; %d stipples' % len( cities.coordinates ) )
 if stipple_report_only:
 	sys.exit( 0 )
 
@@ -249,12 +254,12 @@ if tsp_fd < 0:
 tsp_f = os.fdopen(tsp_fd, 'w')
 
 # Now write the TSPLIB file
-print 'Writing TSP solver input file %s ... ' % tspfile,
+print( 'Writing TSP solver input file %s ... ' % tspfile )
 cities.write_tspfile( tspfile, tsp_f )
-print 'done'
+print( 'done' )
 
 # Run the solver
-print 'Running TSP solver ... '
+print( 'Running TSP solver ... ' )
 cmd = LINKERN + LINKERN_OPTS % ( linkern_runs, solfile, tspfile )
 pipe = subprocess.Popen( cmd, shell=use_shell )
 status = pipe.wait()
@@ -267,29 +272,29 @@ if status:
 	# No, something went wrong
 	sys.stderr.write( 'Solver failed; status = %s\n' % status )
 	os.unlink( solfile )
-	os.sysexit( 1 )
+	sys.exit( 1 )
 
 # Solver succeeded
-print '\nSolver finished successfully'
+print( '\nSolver finished successfully' )
 
 # Load the solution (a tour)
-print 'Loading solver results from %s ... ' % solfile,
+print( 'Loading solver results from %s ... ' % solfile )
 solution = tspSolution()
 if not solution.load( solfile ):
 	sys.stderr.write( 'Unable to load the solution file\n' )
 	os.unlink( solfile )
-	os.sysexit( 1 )
-print 'done'
+	sys.exit( 1 )
+print( 'done' )
 
 # Remove the tour file
 os.unlink(solfile)
 
 # Now write the SVG file
-print 'Writing SVG file %s ... ' % outfile,
+print( 'Writing SVG file %s ... ' % outfile )
 if not cities.write_tspsvg( outfile, solution.tour, max_segments,
 							line_color, fill_color, file_contents,
 							layer_name ):
 	# write_tspsvg() takes care of removing outfile
 	sys.stderr.write( 'Error writing SVG file\n' )
-	os.sysexit( 1 )
-print 'done'
+	sys.exit( 1 )
+print( 'done' )
