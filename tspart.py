@@ -76,7 +76,7 @@ if sys.platform.lower() == 'win32':
 	LINKERN = 'C:\linkern.exe'
 	use_shell = False
 else:
-	LINKERN = '/usr/local/bin/linkern'
+	LINKERN = 'linkern'
 	use_shell = True
 
 # linkern switches

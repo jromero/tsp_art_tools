@@ -1,13 +1,8 @@
 #!/bin/sh
 #
-# 9/27/2010-A
+# 12/26/2014
 # Download and build the Concorde TSP Solver for OS X
 # Tested on OS X 10.6.4 with gcc 4.2.1 from the Apple Xcode distribution
-#
-# As this script defaults to using /usr/local/src and /usr/local/bin, you
-# will want to run this script as root; e.g.,
-#
-#    % sudo build-concorde.sh
 #
 # **** NOTE ********
 # YOU MUST HAVE gcc, make, curl, and likely some other tools as well
@@ -24,19 +19,21 @@
 #
 # Where to store the source tree
 #
-SRCDIR=/usr/local/src/concorde
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+SRCDIR=${DIR}/concorde/src/concorde
 #
 # Where to make the binaries visible from
 # (Concorde's makefile doesn't have an "install" target)
 #
-BINDIR=/usr/local/bin
+BINDIR=${DIR}/bin
+mkdir -p "$BINDIR"
 #
 # What to build (32 bit and/or 64 bit)
 BUILD32=0
 BUILD64=1
 #
 # Because we like to watch the commands go by....
-set -x
+#set -x
 #
 if [ $BUILD32 -eq 0 -a $BUILD64 -eq 0 ]; then
     echo "Looks like there's nothing to do; goodbye"
@@ -102,28 +99,39 @@ if [ $BUILD64 -ne 0 ]; then
     CFLAGS="-g -O3 -m64" ../configure --with-qsopt=$QSOPTDIR --host=darwin
     make
 fi
+
 #
 # Note: if both 32 and 64bit builds were done, then the last of the
 # two built is the one we set up these symbolic links for.  That's
 # because whichever last set BUILDDIR "wins"
 #
 if [ -x $SRCDIR/$BUILDDIR/TSP/concorde ] ; then
-   if [ -L $BINDIR/concorde ] ; then
-       unlink $BINDIR/concorde
-   fi
-   if [ -x $BINDIR/concorde ] ; then
-       echo "$BINDIR/concorde already exists"
-   else
-       ln -s $SRCDIR/$BUILDDIR/TSP/concorde $BINDIR/concorde
-   fi
+    mv "$SRCDIR/$BUILDDIR/TSP/concorde" "$BINDIR/concorde"
+else 
+    echo "Failed to build concorde!"
+    exit 1
 fi
 if [ -x $SRCDIR/$BUILDDIR/LINKERN/linkern ] ; then
-   if [ -L $BINDIR/linkern ] ; then
-       unlink $BINDIR/linkern
-   fi
-   if [ -x $BINDIR/linkern ] ; then
-       echo "$BINDIR/linkern already exists"
-   else
-       ln -s $SRCDIR/$BUILDDIR/LINKERN/linkern $BINDIR/linkern
-   fi
+    mv "$SRCDIR/$BUILDDIR/LINKERN/linkern" "$BINDIR/linkern"
+else 
+    echo "Failed to build linkern!"
+    exit 1
 fi
+
+cat << EOF
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+----------------------------------------
+888888ba    88888   888888ba   88888888b
+88     8b d8     8b 88     8b  88
+88     88 88     88 88     88 a88aaaa
+88     88 88     88 88     88  88
+88     8P Y8     8P 88     88  88
+8888888P    8888P   dP     dP  88888888P
+----------------------------------------
+///////////////////////////////////////
+
+To execute concorde or linkern from anywhere execute...
+echo 'export PATH="\$PATH:$BINDIR"' >> ~/.bash_profile && . ~/.bash_profile
+
+EOF
